@@ -100,9 +100,9 @@ public class login_activity extends AppCompatActivity {
 
                             // 🚀 REDIRECT BASED ON ROLE
                             if(role.equals("admin")){
-                                startActivity(new Intent(this, Admin_dashboard.class));
+                                startActivity(new Intent(this, admin_activity.class));
                             }else{
-                                startActivity(new Intent(this, user_dashboard.class));
+                                startActivity(new Intent(this, HomeFragment_user.class));
                             }
 
                             finish();

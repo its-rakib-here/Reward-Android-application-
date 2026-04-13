@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -14,14 +14,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Reward">
 
-        <!-- USER DASHBOARD -->
+        <!-- 🔥 LAUNCHER (ONLY ONE) -->
         <activity
-            android:name=".user_dashboard"
-            android:exported="false" />
+            android:name=".RouterActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
-        <!-- ADMIN DASHBOARD -->
+        <!-- LOGIN -->
         <activity
-            android:name=".Admin_dashboard"
+            android:name=".login_activity"
             android:exported="false" />
 
         <!-- SIGNUP -->
@@ -29,17 +34,20 @@
             android:name=".Signup_activity"
             android:exported="false" />
 
-        <!-- LOGIN (LAUNCHER) -->
+        <!-- USER DASHBOARD -->
         <activity
-            android:name=".login_activity"
-            android:exported="true">
+            android:name=".MainActivity"
+            android:exported="false" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <!-- ADMIN DASHBOARD -->
+        <activity
+            android:name=".admin_activity"
+            android:exported="false" />
 
-        </activity>
+        <!-- USER FRAGMENT HOST -->
+        <activity
+            android:name=".user_dashboard"
+            android:exported="false" />
 
     </application>
 

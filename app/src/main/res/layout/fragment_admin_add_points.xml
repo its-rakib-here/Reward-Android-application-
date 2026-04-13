@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/background"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <!-- HEADER -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Add Points 💰"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"/>
+
+        <View android:layout_height="20dp"
+
+            android:layout_width="match_parent"/>
+
+        <!-- PHONE INPUT -->
+        <EditText
+            android:id="@+id/etPhone"
+            android:hint="Enter user phone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/input_bg"
+            android:padding="12dp"/>
+
+        <!-- SEARCH BUTTON -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSearch"
+            android:text="Find User"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/primary"/>
+
+        <!-- USER INFO -->
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/tvUserName"
+            android:text="User: -"
+            android:textSize="16sp"
+            android:textColor="@color/text_primary"
+            android:layout_marginTop="15dp"/>
+
+        <!-- POINT INPUT -->
+        <EditText
+            android:id="@+id/etPoints"
+            android:hint="Enter points (+ / -)"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/input_bg"
+            android:padding="12dp"/>
+
+        <!-- NOTE -->
+        <EditText
+            android:id="@+id/etNote"
+            android:hint="Note (optional)"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/input_bg"
+            android:padding="12dp"/>
+
+        <!-- SUBMIT -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSubmit"
+            android:text="Submit"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:backgroundTint="@color/primary"/>
+
+    </LinearLayout>
+
+</ScrollView>

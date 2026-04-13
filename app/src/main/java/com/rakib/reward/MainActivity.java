@@ -21,27 +21,27 @@ public class MainActivity extends AppCompatActivity {
         bottomNav = findViewById(R.id.bottomNav);
 
         // 🔥 default fragment
-        loadFragment(new HomeFragment());
+        loadFragment(new HomeFragment_user());
 
         bottomNav.setOnItemSelectedListener(item -> {
 
             if(item.getItemId() == R.id.nav_home){
-                loadFragment(new HomeFragment());
+                loadFragment(new HomeFragment_user());
                 return true;
             }
 
             else if(item.getItemId() == R.id.nav_history){
-                loadFragment(new HistoryFragment());
+                //loadFragment(new HistoryFragment());
                 return true;
             }
 
             else if(item.getItemId() == R.id.nav_withdraw){
-                loadFragment(new WithdrawFragment());
+               // loadFragment(new WithdrawFragment());
                 return true;
             }
 
             else if(item.getItemId() == R.id.nav_profile){
-                loadFragment(new ProfileFragment());
+                loadFragment(new UserPofileFragment());
                 return true;
             }
 

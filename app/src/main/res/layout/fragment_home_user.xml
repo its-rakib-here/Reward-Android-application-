@@ -4,7 +4,7 @@
     android:background="@color/background"
     android:layout_width="match_parent"
     android:id="@+id/user_dashboard"
-    android:fitsSystemWindows="false"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -90,25 +90,25 @@
                 android:layout_columnWeight="1">
 
                 <LinearLayout
-                    android:gravity="center"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_weight="1"                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="Today Earned"
-                        android:textColor="@color/text_secondary"/>
+                        android:textColor="@color/text_secondary" />
 
                     <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
                         android:id="@+id/tvTodayPoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="0"
+                        android:textColor="@color/text_primary"
                         android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -232,14 +232,7 @@
                 android:text="No recent transactions"
                 android:textColor="@color/text_secondary"/>
         </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNav"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:itemIconTint="@color/primary"
-            app:itemTextColor="@color/text_secondary"
-            app:menu="@menu/bottom_menu"/>
+
     </LinearLayout>
 
 
