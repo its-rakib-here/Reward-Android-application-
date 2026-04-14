@@ -1,0 +1,104 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/background"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="wrap_content">
+
+    <!-- TITLE -->
+    <TextView
+        android:text="Manage User Points"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- USER INFO CARD -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_marginTop="12dp"
+        app:cardCornerRadius="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:padding="12dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/tvUserName"
+                android:text="User: Rakib"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/tvUserPhone"
+                android:text="Phone: 017XXXXXXXX"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/tvBalance"
+                android:text="Balance: 1200 points"
+                android:textColor="@color/primary"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- POINT INPUT -->
+    <EditText
+        android:id="@+id/etPoints"
+        android:hint="Enter points to deduct"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/input_bg"
+        android:padding="12dp"/>
+
+    <!-- REASON -->
+    <EditText
+        android:id="@+id/etReason"
+        android:hint="Reason (optional)"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/input_bg"
+        android:padding="12dp"/>
+
+    <!-- BUTTONS -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDeduct"
+            android:text="Deduct"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:backgroundTint="#E53935"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAdd"
+            android:text="Add"
+            android:layout_marginStart="10dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/primary"/>
+    </LinearLayout>
+
+</LinearLayout>

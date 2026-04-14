@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@color/background">
+
+    <!-- TITLE -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:text="Update Points"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/text_primary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- USER INFO -->
+    <TextView
+        android:id="@+id/tvUser"
+        android:text="User: -"
+        android:textColor="@color/text_secondary"
+        android:layout_marginTop="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <!-- POINT INPUT -->
+    <EditText
+        android:id="@+id/etPoints"
+        android:hint="Enter points"
+        android:inputType="number"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        android:background="@drawable/input_bg"/>
+
+    <!-- NOTE -->
+    <EditText
+        android:id="@+id/etNote"
+        android:hint="Note (optional)"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:padding="12dp"
+        android:background="@drawable/input_bg"/>
+
+    <!-- ACTION BUTTONS -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAdd"
+            android:text="➕ Add"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="50dp"/>
+
+        <com.google.android.material.button.MaterialButton
+           android:backgroundTint="@color/red"
+            android:textColor="@color/text_secondary"
+            android:id="@+id/btnDeduct"
+            android:text="➖ Deduct"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:layout_height="50dp"/>
+    </LinearLayout>
+
+</LinearLayout>

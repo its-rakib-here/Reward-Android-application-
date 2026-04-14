@@ -1,0 +1,101 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 🔥 HEADER -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:src="@drawable/ic_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            app:tint="@color/text_primary" />
+
+        <TextView
+            android:text="All Users"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_primary"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+    <!-- 🔍 SEARCH BAR -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginHorizontal="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:startIconDrawable="@drawable/ic_search">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSearch"
+            android:hint="Search by name or phone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- 🔥 SHIMMER -->
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- fake card -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/shimmer_bg"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/shimmer_bg"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:background="@drawable/shimmer_bg"/>
+
+        </LinearLayout>
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <!-- 🔥 EMPTY STATE -->
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:text="No users found"
+        android:textColor="@color/text_secondary"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"/>
+
+    <!-- 🔥 USER LIST -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvUsers"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"
+        android:clipToPadding="false"/>
+
+</LinearLayout>

@@ -86,15 +86,18 @@ public class login_activity extends AppCompatActivity {
 
                             // 🔐 SAVE SESSION
                             SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sp.edit();
+                            SharedPreferences.Editor ed = sp.edit();
 
-                            editor.putString("name", name);
-                            editor.putString("phone", phoneNo);
-                            editor.putString("role", role);
-                            editor.putString("id", id);
-                            editor.putBoolean("isLoggedIn", true);
+                            ed.putString("id", user.getString("id"));
+                            ed.putString("name", user.getString("name"));
+                            ed.putString("phone", user.getString("phone"));
+                            ed.putString("role", user.getString("role"));
 
-                            editor.apply();
+                            /* 🔐 NEW */
+                            ed.putString("token", user.getString("token"));
+                            ed.putBoolean("isLoggedIn", true);
+
+                            ed.apply();
 
                             Toast.makeText(this, "Login Success", Toast.LENGTH_SHORT).show();
 

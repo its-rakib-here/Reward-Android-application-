@@ -6,4 +6,6 @@
     <color name="text_secondary">#A0A0A0</color>
     <color name="primary">#6C8CFF</color>
     <color name="primary_dark">#5C7CFA</color>
+    <color name="red">#FF0000</color>
+
 </resources>

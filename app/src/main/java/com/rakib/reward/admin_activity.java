@@ -35,7 +35,7 @@ public class admin_activity extends AppCompatActivity {
             }
 
             else if (id == R.id.nav_admin_users) {
-               // loadFragment(new AdminUsersFragment());
+                loadFragment(new AdminUsersFragment());
                 return true;
             }
 

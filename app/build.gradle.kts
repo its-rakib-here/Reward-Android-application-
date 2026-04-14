@@ -41,4 +41,9 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("com.android.volley:volley:1.2.1")
+//    implementation ("com.google.firebase:firebase-bom:34.12.0")
+//    implementation ("com.google.firebase:firebase-analytics")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+
 }
+
