@@ -80,7 +80,6 @@ public class UserDetailsFragment extends Fragment {
         btnupdatePoint.setOnClickListener(v -> {
             new PointsBottomSheet(userId, b.getString(("name")))
                     .show(getParentFragmentManager(), "points");
-            Toast.makeText(getContext(), "Add Points Clicked", Toast.LENGTH_SHORT).show();
         });
 
         // ➖ DEDUCT POINTS
@@ -90,8 +89,21 @@ public class UserDetailsFragment extends Fragment {
 
         // 📜 HISTORY
         btnHistory.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "History Clicked", Toast.LENGTH_SHORT).show();
+
+            Fragment fragment = new TransactionHistoryFragment(); // ✅ create
+
+            Bundle bundle = new Bundle();
+            bundle.putString("user_id", userId); // optional (user specific history)
+
+            fragment.setArguments(bundle);
+
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.adminFragmentContainer, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
+
 
         return view;
     }

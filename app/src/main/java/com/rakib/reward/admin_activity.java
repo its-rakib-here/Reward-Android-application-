@@ -44,8 +44,8 @@ public class admin_activity extends AppCompatActivity {
                 return true;
             }
 
-            else if (id == R.id.nav_admin_add_points) {
-                loadFragment(new AdminAddPointsFragment());
+            else if (id == R.id.TransactionHistory) {
+                loadFragment(new TransactionHistoryFragment());
                 return true;
             }
 

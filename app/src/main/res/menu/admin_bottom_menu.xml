@@ -16,9 +16,9 @@
         android:title="Withdraw"/>
 
     <item
-        android:id="@+id/nav_admin_add_points"
+        android:id="@+id/TransactionHistory"
         android:icon="@android:drawable/ic_input_add"
-        android:title="Points"/>
+        android:title="History"/>
 
     <item
         android:id="@+id/nav_admin_profile"

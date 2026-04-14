@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.tabs.TabLayout;
@@ -64,6 +65,7 @@ public class AdminWithdrawFragment extends Fragment {
         // DEFAULT LOAD
         loadData(currentStatus);
 
+
         // TAB LISTENER
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -109,13 +111,20 @@ public class AdminWithdrawFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        stopSmartRefresh();
+
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+        }
+    }
     // 🔥 LOAD DATA BASED ON STATUS
     private void loadData(String status) {
 
-//        SharedPreferences sp = getActivity().getSharedPreferences("user", 0);
-//
-//        String adminId = sp.getString("id", "");
-//        String token = sp.getString("token", "");
+        if (!isAdded()) return; // 🔥 fragment safe check
 
         String url = "https://varadibo.net/reward/get_withdraw_all.php";
 
@@ -125,26 +134,23 @@ public class AdminWithdrawFragment extends Fragment {
                 response -> {
 
                     try {
-
                         Log.e("request", response);
 
                         JSONObject obj = new JSONObject(response);
 
-                        if(!obj.getBoolean("status")){
-                            Toast.makeText(getContext(),
+                        if (!obj.getBoolean("status")) {
+                            Toast.makeText(requireContext(),
                                     obj.getString("message"),
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
 
-                        // 🔥 FIX HERE (IMPORTANT)
                         JSONObject data = obj.getJSONObject("data");
-
                         JSONArray arr = data.getJSONArray(status);
 
                         list.clear();
 
-                        for(int i = 0; i < arr.length(); i++){
+                        for (int i = 0; i < arr.length(); i++) {
 
                             JSONObject o = arr.getJSONObject(i);
 
@@ -159,12 +165,9 @@ public class AdminWithdrawFragment extends Fragment {
                             ));
                         }
 
-                        // adapter update
-                        if(recyclerView.getAdapter() == null){
+                        if (recyclerView.getAdapter() == null) {
                             recyclerView.setAdapter(
-                                    new WithdrawAdapter(list, (id, action) -> {
-                                        processRequest(id, action);
-                                    })
+                                    new WithdrawAdapter(list, this::processRequest)
                             );
                         } else {
                             ((WithdrawAdapter) recyclerView.getAdapter()).updateList(list);
@@ -172,10 +175,12 @@ public class AdminWithdrawFragment extends Fragment {
 
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(getContext(),"Parse Error: " + e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
+
                 },
-                error -> Toast.makeText(getContext(),"Network Error",Toast.LENGTH_SHORT).show()
+                error -> Toast.makeText(requireContext(),
+                        "Network Error",
+                        Toast.LENGTH_SHORT).show()
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -183,12 +188,13 @@ public class AdminWithdrawFragment extends Fragment {
                 Map<String, String> map = new HashMap<>();
                 map.put("admin_id", adminId);
                 map.put("token", token);
-
                 return map;
             }
         };
 
-        Volley.newRequestQueue(getContext()).add(request);
+        // 🔥 SAFE CONTEXT HERE
+        RequestQueue queue = Volley.newRequestQueue(requireContext().getApplicationContext());
+        queue.add(request);
     }
 
 
@@ -230,9 +236,11 @@ public class AdminWithdrawFragment extends Fragment {
             @Override
             public void run() {
 
+                if (!isAdded()) return; // 🔥 IMPORTANT
+
                 loadData(status);
 
-                handler.postDelayed(this, 20000); // 20 sec safe
+                handler.postDelayed(this, 20000);
             }
         };
 
