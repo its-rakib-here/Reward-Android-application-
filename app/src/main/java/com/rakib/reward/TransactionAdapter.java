@@ -44,15 +44,24 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         TransactionModel item = list.get(i);
 
+        // TYPE
         h.tvType.setText(item.type.toUpperCase());
 
-        if(item.type.equals("add")){
+        // POINT STYLE
+        if(item.type.equalsIgnoreCase("add")){
             h.tvPoints.setText("+ " + item.points);
-        } else {
+        }
+        else if(item.type.equalsIgnoreCase("deduct") || item.type.equalsIgnoreCase("withdraw")){
             h.tvPoints.setText("- " + item.points);
         }
+        else {
+            h.tvPoints.setText(item.points);
+        }
 
+        // REASON
         h.tvReason.setText(item.reason);
+
+        // DATE
         h.tvDate.setText(item.createdAt);
     }
 

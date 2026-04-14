@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -86,11 +88,32 @@ public class TransactionHistoryFragment extends Fragment {
         filters.add("deduct");
         filters.add("withdraw");
 
+// 🔥 ADD THIS
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_dropdown_item,
+                filters
+        );
+        spFilter.setAdapter(spinnerAdapter);
         // back
         btnBack.setOnClickListener(v ->
                 requireActivity().getSupportFragmentManager().popBackStack()
         );
+        spFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
+                selectedFilter = filters.get(position);
+
+                loadData(
+                        etSearch.getText().toString().trim(),
+                        selectedFilter
+                );
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
         // search
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -119,7 +142,7 @@ public class TransactionHistoryFragment extends Fragment {
     // =========================
     // LOAD DATA
     // =========================
-    private void loadData(String search, String filter) {
+    private void loadData(String search, String filter){
 
         SharedPreferences sp = requireActivity().getSharedPreferences("user", 0);
         String adminId = sp.getString("id", "");
@@ -134,69 +157,74 @@ public class TransactionHistoryFragment extends Fragment {
 
                         JSONObject obj = new JSONObject(response);
 
-                        if (!obj.getBoolean("status")) {
+                        if(!obj.getBoolean("status")){
                             Toast.makeText(getContext(),
                                     obj.optString("message"),
                                     Toast.LENGTH_SHORT).show();
                             return;
                         }
 
+                        String mode = obj.optString("mode");
+
                         JSONArray arr = obj.getJSONArray("transactions");
 
-                        List<TransactionModel> tempList = new ArrayList<>();
+                        // 🔥 ALL USERS MODE
+                        if(mode.equals("all")){
 
-                        // =========================
-                        // ALL USER SUMMARY UI
-                        // =========================
-                        if (userId == null || userId.isEmpty()) {
-
+                            recyclerView.setVisibility(View.GONE);
                             allUserContainer.setVisibility(View.VISIBLE);
+
                             allUserContainer.removeAllViews();
 
-                            HashMap<String, JSONObject> lastMap = new HashMap<>();
-
-                            for (int i = 0; i < arr.length(); i++) {
+                            for(int i=0;i<arr.length();i++){
 
                                 JSONObject o = arr.getJSONObject(i);
-                                String uid = o.optString("user_id");
-
-                                if (!lastMap.containsKey(uid)) {
-                                    lastMap.put(uid, o);
-                                }
-
-                                tempList.add(new TransactionModel(
-                                        o.optString("id"),
-                                        o.optString("user_id"),
-                                        o.optString("points"),
-                                        o.optString("type"),
-                                        o.optString("reason"),
-                                        o.optString("created_at")
-                                ));
-                            }
-
-                            // create summary cards
-                            for (JSONObject o : lastMap.values()) {
 
                                 View card = LayoutInflater.from(getContext())
-                                        .inflate(R.layout.item_user_summary, allUserContainer, false);
+                                        .inflate(R.layout.item_all_user, allUserContainer, false);
 
-                                TextView name = card.findViewById(R.id.tvName);
-                                TextView type = card.findViewById(R.id.tvLastType);
-                                TextView points = card.findViewById(R.id.tvLastPoints);
-                                TextView date = card.findViewById(R.id.tvLastDate);
+                                TextView tvName = card.findViewById(R.id.tvName);
+                                TextView tvPhone = card.findViewById(R.id.tvPhone);
+                                TextView tvLastTxn = card.findViewById(R.id.tvLastTxn);
 
-                                name.setText(o.optString("name"));
-                                type.setText("Last: " + o.optString("type").toUpperCase());
-                                points.setText("Points: " + o.optString("points"));
-                                date.setText(o.optString("created_at"));
+                                tvName.setText(o.optString("name"));
+                                tvPhone.setText(o.optString("phone"));
+
+                                String type = o.optString("type");
+                                String points = o.optString("points");
+
+                                tvLastTxn.setText(type.toUpperCase() + " : " + points);
+
+                                // 👉 click → open details
+                                card.setOnClickListener(v -> {
+
+                                    Bundle b = new Bundle();
+                                    b.putString("user_id", o.optString("user_id"));
+
+                                    TransactionHistoryFragment fragment = new TransactionHistoryFragment();
+                                    fragment.setArguments(b);
+
+                                    requireActivity().getSupportFragmentManager()
+                                            .beginTransaction()
+                                            .replace(R.id.adminFragmentContainer, fragment)
+                                            .addToBackStack(null)
+                                            .commit();
+                                });
 
                                 allUserContainer.addView(card);
                             }
 
-                        } else {
-                            allUserContainer.setVisibility(View.GONE);
+                        }
 
-                            for (int i = 0; i < arr.length(); i++) {
+                        // 🔥 SINGLE USER MODE
+                        else{
+
+                            allUserContainer.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+
+                            List<TransactionModel> tempList = new ArrayList<>();
+
+                            for(int i=0;i<arr.length();i++){
 
                                 JSONObject o = arr.getJSONObject(i);
 
@@ -209,11 +237,11 @@ public class TransactionHistoryFragment extends Fragment {
                                         o.optString("created_at")
                                 ));
                             }
+
+                            adapter.update(tempList);
                         }
 
-                        adapter.update(tempList);
-
-                    } catch (Exception e) {
+                    } catch (Exception e){
                         e.printStackTrace();
                         Toast.makeText(getContext(),
                                 "Parse Error",
@@ -223,9 +251,9 @@ public class TransactionHistoryFragment extends Fragment {
                 },
                 error -> {
 
-                    String msg = "Unknown Error";
+                    String msg = "Unknown";
 
-                    if (error.networkResponse != null) {
+                    if(error.networkResponse != null){
                         msg = "Code: " + error.networkResponse.statusCode;
                     }
 
@@ -233,11 +261,11 @@ public class TransactionHistoryFragment extends Fragment {
                             "Network Error: " + msg,
                             Toast.LENGTH_LONG).show();
                 }
-        ) {
+        ){
             @Override
-            protected Map<String, String> getParams() {
+            protected Map<String,String> getParams(){
 
-                Map<String, String> map = new HashMap<>();
+                Map<String,String> map = new HashMap<>();
                 map.put("admin_id", adminId);
                 map.put("token", token);
                 map.put("search", search);
@@ -248,7 +276,6 @@ public class TransactionHistoryFragment extends Fragment {
             }
         };
 
-        request.setTag("TXN_API");
         requestQueue.add(request);
     }
 
