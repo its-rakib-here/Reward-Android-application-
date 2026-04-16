@@ -58,24 +58,39 @@ public class AdminUsersFragment extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        adapter = new UserAdapter(requireContext(), list, user -> {
+        adapter = new UserAdapter(requireContext(), list, new UserAdapter.OnUserClick() {
+            @Override
+            public void onClick(UserModel user) {
+                // 🔹 existing code (details page)
+                Bundle bundle = new Bundle();
+                bundle.putString("id", user.getId());
+                bundle.putString("name", user.getName());
+                bundle.putString("phone", user.getPhone());
+                bundle.putString("points", user.getPoints());
 
-            Bundle bundle = new Bundle();
-            bundle.putString("id", user.getId());
-            bundle.putString("name", user.getName());
-            bundle.putString("phone", user.getPhone());
-            bundle.putString("points", user.getPoints());
+                Fragment fragment = new UserDetailsFragment();
+                fragment.setArguments(bundle);
 
-            Fragment fragment = new UserDetailsFragment();
-            fragment.setArguments(bundle);
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.adminFragmentContainer, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
 
+            @Override
+            public void onDeleteClick(UserModel user, int position) {
 
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.adminFragmentContainer, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        });        recyclerView.setAdapter(adapter);
+                new android.app.AlertDialog.Builder(requireContext())
+                        .setTitle("Delete User")
+                        .setMessage("Are you sure?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            deleteUser(user.getId(), position);
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+        });    recyclerView.setAdapter(adapter);
 
         requestQueue = Volley.newRequestQueue(requireContext());
 
@@ -212,5 +227,51 @@ public class AdminUsersFragment extends Fragment {
         if(searchHandler != null && searchRunnable != null){
             searchHandler.removeCallbacks(searchRunnable);
         }
+    }
+
+    private void deleteUser(String userId, int position){
+
+        String url = "https://varadibo.net/reward/delete_user.php";
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                response -> {
+                    try {
+                        JSONObject obj = new JSONObject(response);
+
+                        if(obj.getBoolean("status")){
+
+                            Toast.makeText(requireContext(), "Deleted", Toast.LENGTH_SHORT).show();
+
+                            adapter.removeItem(position); // 🔥 UI update
+
+                        } else {
+                            Toast.makeText(requireContext(),
+                                    obj.getString("message"),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+                },
+                error -> Toast.makeText(requireContext(),
+                        "Delete Failed",
+                        Toast.LENGTH_SHORT).show()
+        ){
+            @Override
+            protected Map<String, String> getParams(){
+
+                SharedPreferences sp = requireActivity().getSharedPreferences("user", 0);
+
+                Map<String, String> map = new HashMap<>();
+                map.put("user_id", userId);
+                map.put("admin_id", sp.getString("id", ""));
+                map.put("token", sp.getString("token", ""));
+
+                return map;
+            }
+        };
+
+        requestQueue.add(request);
     }
 }
