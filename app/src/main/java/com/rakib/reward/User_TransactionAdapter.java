@@ -50,26 +50,66 @@ public class User_TransactionAdapter extends RecyclerView.Adapter<User_Transacti
 
         User_TransactionModel m = list.get(position);
 
-        h.title.setText(m.title);
-        h.date.setText(m.date);
-        h.status.setText(m.action.toUpperCase());
+        h.title.setText(
+                (m.title == null || m.title.trim().isEmpty() || m.title.equals("0"))
+                        ? "No Title"
+                        : m.title
+        );        h.date.setText(m.date);
 
-        if (m.type.equals("withdraw")) {
+        String type = m.type != null ? m.type.toLowerCase() : "";
+        String source = m.action != null ? m.action.toLowerCase() : "";
 
-            h.points.setText("-" + m.points + " pts");
-            h.amount.setText("৳ " + m.amount);
+        h.status.setText(type.toUpperCase());
+
+        int points = 0;
+        double amount = 0;
+
+        try {
+            points = Integer.parseInt(m.points);
+        } catch (Exception ignored) {}
+
+        try {
+            amount = Double.parseDouble(m.amount);
+        } catch (Exception ignored) {}
+
+        // =========================
+        // WITHDRAW
+        // =========================
+        if (source.equals("withdraw")) {
+
+            h.points.setText("-" + points + " pts");
+            h.amount.setText("৳ " + amount);
 
             h.points.setTextColor(Color.parseColor("#D32F2F"));
             h.amount.setTextColor(Color.parseColor("#D32F2F"));
             h.status.setTextColor(Color.parseColor("#D32F2F"));
 
-        } else {
+        }
+        // =========================
+        // ADD / DEDUCT
+        // =========================
+        else {
 
-            h.points.setText("+" + m.points + " pts");
-            h.amount.setText("৳ " + m.amount);
+            if (type.equals("add")) {
 
-            h.points.setTextColor(Color.parseColor("#2E7D32"));
-            h.amount.setTextColor(Color.parseColor("#1565C0"));
+                h.points.setText("+" + points + " pts");
+
+                h.points.setTextColor(Color.parseColor("#2E7D32"));
+                h.amount.setTextColor(Color.parseColor("#1565C0"));
+
+            } else if (type.equals("deduct")) {
+
+                h.points.setText("-" + points + " pts");
+
+                h.points.setTextColor(Color.parseColor("#D32F2F"));
+                h.amount.setTextColor(Color.parseColor("#D32F2F"));
+
+            } else {
+
+                h.points.setText(points + " pts");
+            }
+
+            h.amount.setText("৳ " + amount);
             h.status.setTextColor(Color.parseColor("#2E7D32"));
         }
     }

@@ -29,6 +29,7 @@ public class User_TransactionFragment extends Fragment {
     User_TransactionAdapter adapter;
 
     List<User_TransactionModel> list = new ArrayList<>();
+
     String url = "https://varadibo.net/reward/user_transaction_history.php";
 
     @Override
@@ -47,7 +48,7 @@ public class User_TransactionFragment extends Fragment {
 
     private void loadData() {
 
-        SharedPreferences sp = getActivity().getSharedPreferences("user", 0);
+        SharedPreferences sp = requireActivity().getSharedPreferences("user", 0);
         String userId = sp.getString("id", "");
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
@@ -55,6 +56,12 @@ public class User_TransactionFragment extends Fragment {
                     try {
 
                         JSONObject obj = new JSONObject(response);
+
+                        if (!obj.getBoolean("status")) {
+                            Toast.makeText(getActivity(), "No data found", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         JSONArray arr = obj.getJSONArray("data");
 
                         list.clear();
@@ -63,18 +70,28 @@ public class User_TransactionFragment extends Fragment {
 
                             JSONObject o = arr.getJSONObject(i);
 
+                            String type = o.optString("type", "");
+                            String title = o.optString("reason", "No title");                            String amount = o.optString("amount", "0");
+                            String date = o.optString("date", "");
+                            String points = o.optString("points", "0");
+                            String source = o.optString("source", "");
+
                             list.add(new User_TransactionModel(
-                                    o.getString("type"),
-                                    o.getString("title"),
-                                    o.getString("amount"),
-                                    o.getString("action"),
-                                    o.getString("date"),
-                                    o.optString("points", "0")
+                                    type,
+                                    title,
+                                    amount,
+                                    source,
+                                    date,
+                                    points
                             ));
                         }
 
-                        adapter = new User_TransactionAdapter(getActivity(), list);
-                        recyclerView.setAdapter(adapter);
+                        if (adapter == null) {
+                            adapter = new User_TransactionAdapter(getActivity(), list);
+                            recyclerView.setAdapter(adapter);
+                        } else {
+                            adapter.notifyDataSetChanged();
+                        }
 
                     } catch (Exception e) {
                         e.printStackTrace();
