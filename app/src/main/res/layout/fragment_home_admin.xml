@@ -12,28 +12,59 @@
         android:layout_height="wrap_content">
 
         <!-- 🔥 HEADER -->
-        <LinearLayout
-            android:orientation="vertical"
+        <!-- 🔥 MODERN HEADER CARD -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            android:backgroundTint="#6C5CE7">
 
-            <TextView
-                android:id="@+id/tvAdminName"
-                android:text="Hello, Admin 👋"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/text_primary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:padding="18dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:text="Here’s what’s happening today"
-                android:textSize="14sp"
-                android:textColor="@color/text_secondary"
-                android:layout_marginTop="2dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/tvAdminName"
+                    android:text="Hello, Admin 👋"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"/>
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="System Overview"
+                    android:textSize="13sp"
+                    android:textColor="#E0E0E0"
+                    android:layout_marginTop="2dp"/>
+
+                <!-- 💰 BIG METRIC -->
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:id="@+id/tvSystemMoney"
+                    android:text="৳ 0.00"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="10dp"/>
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="Total System Value"
+                    android:textSize="12sp"
+                    android:textColor="#E0E0E0"/>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <View
             android:layout_height="20dp"
@@ -56,28 +87,25 @@
                 android:backgroundTint="#F5F7FA">
 
                 <LinearLayout
-                    android:padding="12dp"
-                    android:orientation="vertical"
+                    android:padding="14dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Users"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"/>
+                        android:text="💸"
+                        android:textSize="18sp"
+                        android:layout_marginEnd="10dp"/>
 
                     <TextView
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:id="@+id/tvUsers"
-                        android:text="0"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/text_primary"
-                        android:layout_marginTop="8dp"/>
-
+                        android:text="Withdraw Requests"
+                        android:textSize="15sp"
+                        android:textColor="@color/text_primary"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -88,22 +116,32 @@
                 android:layout_height="120dp"
                 android:layout_columnWeight="1"
                 app:cardCornerRadius="18dp"
-                app:cardElevation="4dp"
+                app:cardElevation="2dp"
                 android:backgroundTint="#E8F5E9">
 
                 <LinearLayout
-                    android:padding="12dp"
+                    android:padding="14dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <!-- ICON -->
+                    <TextView
+                        android:text="🟢"
+                        android:textSize="18sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <!-- TITLE -->
                     <TextView
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="Points Issued"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"/>
+                        android:textColor="#666666"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp"/>
 
+                    <!-- VALUE -->
                     <TextView
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
@@ -112,7 +150,7 @@
                         android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="#2E7D32"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="6dp"/>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -124,22 +162,32 @@
                 android:layout_height="120dp"
                 android:layout_columnWeight="1"
                 app:cardCornerRadius="18dp"
-                app:cardElevation="4dp"
-                android:backgroundTint="#FFF3E0">
+                app:cardElevation="2dp"
+                android:backgroundTint="#FFF8E1">
 
                 <LinearLayout
-                    android:padding="12dp"
+                    android:padding="14dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <!-- ICON -->
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="💸"
+                        android:textSize="18sp"/>
+
+                    <!-- TITLE -->
                     <TextView
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="Withdraw"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"/>
+                        android:textColor="#666666"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp"/>
 
+                    <!-- VALUE -->
                     <TextView
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
@@ -148,11 +196,10 @@
                         android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="#EF6C00"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="6dp"/>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
             <!-- PENDING -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_margin="6dp"
@@ -160,22 +207,32 @@
                 android:layout_height="120dp"
                 android:layout_columnWeight="1"
                 app:cardCornerRadius="18dp"
-                app:cardElevation="4dp"
+                app:cardElevation="2dp"
                 android:backgroundTint="#FFEBEE">
 
                 <LinearLayout
-                    android:padding="12dp"
+                    android:padding="14dp"
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <!-- ICON -->
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="⏳"
+                        android:textSize="18sp"/>
+
+                    <!-- TITLE -->
                     <TextView
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="Pending"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"/>
+                        android:textColor="#666666"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp"/>
 
+                    <!-- VALUE -->
                     <TextView
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
@@ -184,7 +241,7 @@
                         android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="#C62828"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="6dp"/>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

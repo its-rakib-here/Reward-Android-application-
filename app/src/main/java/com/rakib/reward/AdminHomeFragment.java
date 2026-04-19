@@ -1,5 +1,7 @@
 package com.rakib.reward;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.animation.ValueAnimator;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -17,7 +18,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 
 import org.json.JSONObject;
@@ -27,15 +27,15 @@ import java.util.Map;
 
 public class AdminHomeFragment extends Fragment {
 
-    TextView tvUsers, tvPoints, tvWithdraw, tvPending, tvAdminName,tvManageUser;
-    MaterialCardView btnAddPoints,btnWithdraw,btnUsers,updatePointValue;
-
+    TextView tvPoints, tvWithdraw, tvPending, tvAdminName, tvSystemMoney;
+    MaterialCardView btnAddPoints, btnWithdraw, updatePointValue;
     String url = "https://varadibo.net/reward/admin_dashboard.php";
     String lastUpdate = "";
 
     RequestQueue requestQueue;
     Handler handler = new Handler();
     Runnable refreshRunnable;
+
     public AdminHomeFragment(){}
 
     @Override
@@ -44,79 +44,55 @@ public class AdminHomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home_admin, container, false);
 
-        // 🔥 INIT
-        tvUsers = view.findViewById(R.id.tvUsers);
+        // 🔥 INIT (MATCH WITH XML)
         tvPoints = view.findViewById(R.id.tvPoints);
         tvWithdraw = view.findViewById(R.id.tvWithdraw);
         tvPending = view.findViewById(R.id.tvPending);
         tvAdminName = view.findViewById(R.id.tvAdminName);
-//        btnUsers=view.findViewById(R.id.btnUsers);
-        btnAddPoints=view.findViewById(R.id.btnAddPoints);
-        btnWithdraw=view.findViewById(R.id.btnWithdraw);
-//        tvManageUser=view.findViewById(R.id.tvManageUser);
-        updatePointValue=view.findViewById(R.id.updatePointValue);
+        tvSystemMoney = view.findViewById(R.id.tvSystemMoney);
 
+        btnAddPoints = view.findViewById(R.id.btnAddPoints);
+        btnWithdraw = view.findViewById(R.id.btnWithdraw);
+        updatePointValue = view.findViewById(R.id.updatePointValue);
 
         requestQueue = Volley.newRequestQueue(requireContext());
 
         // 🔥 ADMIN NAME
-        SharedPreferences sp = requireActivity().getSharedPreferences("user", 0);
+        SharedPreferences sp = requireActivity().getSharedPreferences("user",MODE_PRIVATE);
         String name = sp.getString("name", "Admin");
         tvAdminName.setText("Hello, " + name + " 👋");
 
         // 🔥 LOAD DATA
         loadDashboard();
         startLiveUpdate();
-        btnAddPoints.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                Fragment fragment = new AdminAddPointsFragment();
-
-                requireActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.adminFragmentContainer, fragment) // 🔥 container id
-                        .addToBackStack(null) // 🔥 back button support
-                        .commit();
-            }
-        });
-        btnWithdraw.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fragment=new AdminWithdrawFragment();
-                requireActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.adminFragmentContainer,fragment)
-                        .addToBackStack(null)
-                        .commit();
-            }
+        // 🔥 NAVIGATION
+        btnAddPoints.setOnClickListener(v -> {
+            Fragment fragment = new AdminAddPointsFragment();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.adminFragmentContainer, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
-        updatePointValue.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Fragment fragment=new AdminSettingsFragment();
-                        requireActivity().getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.adminFragmentContainer,fragment)
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                }
-        );
+        btnWithdraw.setOnClickListener(v -> {
+            Fragment fragment = new AdminWithdrawFragment();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.adminFragmentContainer, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
 
-//        tvManageUser.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Fragment fragment=new AdminUsersFragment();
-//                requireActivity().getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .replace(R.id.adminFragmentContainer,fragment)
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-//        });
+        updatePointValue.setOnClickListener(v -> {
+            Fragment fragment = new AdminSettingsFragment();
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.adminFragmentContainer, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         return view;
     }
@@ -136,29 +112,29 @@ public class AdminHomeFragment extends Fragment {
                     try {
 
                         JSONObject obj = new JSONObject(response);
-
+                         Log.e("totall amoutnt",response);
                         if(!obj.getBoolean("status")) return;
 
                         String newUpdate = obj.optString("last_update");
 
-                        // 🔥 ONLY UPDATE IF DATA CHANGED
-                        if(newUpdate.equals(lastUpdate)){
-                            return;
-                        }
+                        if(newUpdate.equals(lastUpdate)) return;
 
                         lastUpdate = newUpdate;
 
                         JSONObject data = obj.getJSONObject("data");
 
-                        int users = data.optInt("total_users");
                         int points = data.optInt("total_points");
                         int withdraw = data.optInt("total_withdraw");
                         int pending = data.optInt("pending_requests");
+                        double systemMoney = data.optDouble("total_system_money", 0);
 
-                        animateText(tvUsers, users);
+                        tvSystemMoney.setText("৳ " + String.format("%.2f", systemMoney));
                         animateText(tvPoints, points);
                         animateText(tvWithdraw, withdraw);
                         animateText(tvPending, pending);
+
+                        // 🔥 MONEY FORMAT
+//                        tvSystemMoney.setText("৳ " + String.format("%.2f", systemMoney));
 
                     } catch (Exception e){
                         e.printStackTrace();
@@ -180,13 +156,20 @@ public class AdminHomeFragment extends Fragment {
 
         requestQueue.add(request);
     }
+
     // =========================
-    // 🔥 NUMBER ANIMATION
+    // 🔥 ANIMATION (IMPROVED)
     // =========================
     private void animateText(TextView tv, int value){
 
-        ValueAnimator animator = ValueAnimator.ofInt(0, value);
-        animator.setDuration(800);
+        int start = 0;
+
+        try {
+            start = Integer.parseInt(tv.getText().toString());
+        } catch (Exception ignored){}
+
+        ValueAnimator animator = ValueAnimator.ofInt(start, value);
+        animator.setDuration(500);
 
         animator.addUpdateListener(animation ->
                 tv.setText(String.valueOf(animation.getAnimatedValue()))
@@ -211,13 +194,11 @@ public class AdminHomeFragment extends Fragment {
             public void run() {
 
                 loadDashboard();
+                handler.postDelayed(this, 10000);
 
-                handler.postDelayed(this, 10000); // 🔥 every 10 sec
             }
         };
 
         handler.post(refreshRunnable);
     }
-
-
 }

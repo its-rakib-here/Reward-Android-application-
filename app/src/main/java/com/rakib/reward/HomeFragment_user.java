@@ -9,21 +9,28 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class HomeFragment_user extends Fragment {
 
     TextView tvTotalPoints, tvTodayPoints, tvWithdraw, tvMoney;
-
+    RecyclerView recentRecycler;
+    List<User_TransactionModel> recentList = new ArrayList<>();
+    RecentAdapter recentAdapter;
     String url = "https://varadibo.net/reward/user_dashboard.php";
 
     @Override
@@ -37,9 +44,12 @@ public class HomeFragment_user extends Fragment {
         tvTodayPoints = view.findViewById(R.id.tvTodayPoints);
         tvWithdraw = view.findViewById(R.id.tvWithdraw);
         tvMoney = view.findViewById(R.id.tvMoney);
+        recentRecycler = view.findViewById(R.id.recentRecycler);
+        recentRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // 🔥 LOAD DATA
         loadDashboardData();
+        loadRecent();
 
         // 🔥 BUTTONS
         view.findViewById(R.id.btnWithdraw).setOnClickListener(v -> {
@@ -73,6 +83,55 @@ public class HomeFragment_user extends Fragment {
         });
 
         return view;
+    }
+
+    private void loadRecent() {
+
+        SharedPreferences sp = getActivity().getSharedPreferences("user", 0);
+        String userId = sp.getString("id", "");
+
+        StringRequest request = new StringRequest(Request.Method.POST,
+                "https://varadibo.net/reward/recent_activity.php",
+                response -> {
+                    try {
+
+                        JSONObject obj = new JSONObject(response);
+                        JSONArray arr = obj.getJSONArray("data");
+
+                        recentList.clear();
+
+                        for (int i = 0; i < arr.length(); i++) {
+
+                            JSONObject o = arr.getJSONObject(i);
+
+                            recentList.add(new User_TransactionModel(
+                                    o.getString("type"),
+                                    o.getString("title"),
+                                    o.getString("amount"),
+                                    o.getString("action"),
+                                    o.getString("date"),
+                                    o.optString("points","0")
+                            ));
+                        }
+
+                        recentAdapter = new RecentAdapter(getActivity(), recentList);
+                        recentRecycler.setAdapter(recentAdapter);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> {}
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> map = new HashMap<>();
+                map.put("user_id", userId);
+                return map;
+            }
+        };
+
+        Volley.newRequestQueue(getActivity()).add(request);
     }
 
     private void loadDashboardData() {
