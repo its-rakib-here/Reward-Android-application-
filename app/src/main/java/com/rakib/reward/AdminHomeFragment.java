@@ -28,7 +28,7 @@ import java.util.Map;
 public class AdminHomeFragment extends Fragment {
 
     TextView tvUsers, tvPoints, tvWithdraw, tvPending, tvAdminName,tvManageUser;
-    MaterialCardView btnAddPoints,btnWithdraw,btnUsers;
+    MaterialCardView btnAddPoints,btnWithdraw,btnUsers,updatePointValue;
 
     String url = "https://varadibo.net/reward/admin_dashboard.php";
     String lastUpdate = "";
@@ -54,6 +54,7 @@ public class AdminHomeFragment extends Fragment {
         btnAddPoints=view.findViewById(R.id.btnAddPoints);
         btnWithdraw=view.findViewById(R.id.btnWithdraw);
 //        tvManageUser=view.findViewById(R.id.tvManageUser);
+        updatePointValue=view.findViewById(R.id.updatePointValue);
 
 
         requestQueue = Volley.newRequestQueue(requireContext());
@@ -90,6 +91,20 @@ public class AdminHomeFragment extends Fragment {
                         .commit();
             }
         });
+
+        updatePointValue.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Fragment fragment=new AdminSettingsFragment();
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.adminFragmentContainer,fragment)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                }
+        );
 
 //        tvManageUser.setOnClickListener(new View.OnClickListener() {
 //            @Override

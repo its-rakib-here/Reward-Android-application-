@@ -105,7 +105,7 @@ public class login_activity extends AppCompatActivity {
                             if(role.equals("admin")){
                                 startActivity(new Intent(this, admin_activity.class));
                             }else{
-                                startActivity(new Intent(this, HomeFragment_user.class));
+                                startActivity(new Intent(this, MainActivity.class));
                             }
 
                             finish();

@@ -1,6 +1,5 @@
 package com.rakib.reward;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONObject;
 
@@ -24,9 +22,9 @@ import java.util.Map;
 
 public class HomeFragment_user extends Fragment {
 
-    TextView tvTotalPoints, tvTodayPoints, tvWithdraw;
+    TextView tvTotalPoints, tvTodayPoints, tvWithdraw, tvMoney;
 
-    String url = "https://yourdomain.com/dashboard.php"; // 🔥 change this
+    String url = "https://varadibo.net/reward/user_dashboard.php";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,32 +32,27 @@ public class HomeFragment_user extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home_user, container, false);
 
-        // 🔥 INIT VIEWS
+        // 🔥 INIT
         tvTotalPoints = view.findViewById(R.id.tvTotalPoints);
         tvTodayPoints = view.findViewById(R.id.tvTodayPoints);
         tvWithdraw = view.findViewById(R.id.tvWithdraw);
+        tvMoney = view.findViewById(R.id.tvMoney);
 
-
-        // 🔥 LOAD DATA FROM API
+        // 🔥 LOAD DATA
         loadDashboardData();
 
-        // 🔥 BUTTON CLICK (Withdraw)
-        view.findViewById(R.id.btnWithdraw).setOnClickListener(v -> {
-            //startActivity(new Intent(getActivity(), WithdrawActivity.class));
-        });
+        // 🔥 BUTTONS
+        view.findViewById(R.id.btnWithdraw).setOnClickListener(v ->
+                Toast.makeText(getActivity(), "Withdraw Clicked", Toast.LENGTH_SHORT).show()
+        );
 
-        // 🔥 BUTTON CLICK (History)
-        view.findViewById(R.id.btnHistory).setOnClickListener(v -> {
-           // startActivity(new Intent(getActivity(), HistoryActivity.class));
-        });
-
-        // 🔥 BOTTOM NAVIGATION
-
+        view.findViewById(R.id.btnHistory).setOnClickListener(v ->
+                Toast.makeText(getActivity(), "History Clicked", Toast.LENGTH_SHORT).show()
+        );
 
         return view;
     }
 
-    // 🔥 API CALL
     private void loadDashboardData() {
 
         SharedPreferences sp = getActivity().getSharedPreferences("user", 0);
@@ -71,19 +64,23 @@ public class HomeFragment_user extends Fragment {
 
                         JSONObject obj = new JSONObject(response);
 
-                        if(obj.getBoolean("status")){
-
-                            JSONObject data = obj.getJSONObject("data");
-
-                            String total = data.getString("total_points");
-                            String today = data.getString("today_points");
-                            String withdraw = data.getString("withdraw_status");
-
-                            tvTotalPoints.setText(total);
-                            tvTodayPoints.setText(today);
-                            tvWithdraw.setText(withdraw);
-
+                        if (!obj.getBoolean("status")) {
+                            Toast.makeText(getActivity(), "Failed", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+
+                        JSONObject data = obj.getJSONObject("data");
+
+                        int totalPoints = data.getInt("total_points");
+                        int todayPoints = data.getInt("today_points");
+                        String withdraw = data.getString("withdraw_status");
+                        double money = data.getDouble("money");
+
+                        // 🔥 UI UPDATE
+                        tvTotalPoints.setText(totalPoints + " Points");
+                        tvTodayPoints.setText(String.valueOf(todayPoints));
+                        tvWithdraw.setText(withdraw);
+                        tvMoney.setText("৳ " + String.format("%.2f", money));
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -91,9 +88,9 @@ public class HomeFragment_user extends Fragment {
                     }
                 },
                 error -> Toast.makeText(getActivity(), "Server error", Toast.LENGTH_SHORT).show()
-        ){
+        ) {
             @Override
-            protected Map<String, String> getParams(){
+            protected Map<String, String> getParams() {
 
                 Map<String, String> params = new HashMap<>();
                 params.put("user_id", userId);
@@ -102,7 +99,6 @@ public class HomeFragment_user extends Fragment {
             }
         };
 
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        queue.add(request);
+        Volley.newRequestQueue(getActivity()).add(request);
     }
 }
