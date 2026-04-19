@@ -117,6 +117,7 @@ public class PointsBottomSheet extends BottomSheetDialogFragment {
                             result.putString("user_id", userId);
                             result.putString("type", type);
                             result.putString("points", String.valueOf(points));
+                            result.putString("reasons",reason.toString());
 
                             getParentFragmentManager().setFragmentResult(
                                     "POINT_UPDATED",

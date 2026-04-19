@@ -13,12 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/btnBack"
-            android:src="@drawable/ic_back"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:padding="4dp"/>
+
 
         <TextView
             android:text="Transaction History 📜"

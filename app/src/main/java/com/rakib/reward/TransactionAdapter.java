@@ -1,5 +1,7 @@
 package com.rakib.reward;
 
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +21,18 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public static class VH extends RecyclerView.ViewHolder{
 
-        TextView tvType, tvPoints, tvReason, tvDate;
-
+        TextView tvType, tvAmount, tvPoints, tvReason, tvDate;
+        TextView tvName;
         public VH(View v){
             super(v);
+
             tvType = v.findViewById(R.id.tvType);
+            tvAmount = v.findViewById(R.id.tvAmount);
             tvPoints = v.findViewById(R.id.tvPoints);
             tvReason = v.findViewById(R.id.tvReason);
             tvDate = v.findViewById(R.id.tvDate);
+            tvName = v.findViewById(R.id.tvName);
+
         }
     }
 
@@ -44,33 +50,73 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         TransactionModel item = list.get(i);
 
-        // TYPE
-        h.tvType.setText(item.type.toUpperCase());
+        String type = item.type != null ? item.type.toLowerCase() : "unknown";
 
-        // POINT STYLE
-        if(item.type.equalsIgnoreCase("add")){
-            h.tvPoints.setText("+ " + item.points);
-        }
-        else if(item.type.equalsIgnoreCase("deduct") || item.type.equalsIgnoreCase("withdraw")){
-            h.tvPoints.setText("- " + item.points);
-        }
-        else {
-            h.tvPoints.setText(item.points);
+        int points = 0;
+        try {
+            points = Integer.parseInt(item.points);
+        } catch (Exception ignored){}
+
+        // amount from API
+        String amount = item.totall_amount;
+
+        if(amount == null || amount.trim().isEmpty()){
+            amount = "0.00";
         }
 
-        // REASON
-        h.tvReason.setText(item.reason);
+        h.tvType.setText(type.toUpperCase());
+        h.tvName.setText(
+                item.name != null ? item.name : "Unknown User"
+        );
+        switch (type){
 
-        // DATE
-        h.tvDate.setText(item.createdAt);
+            case "add":
+                h.tvType.setBackgroundColor(Color.parseColor("#2E7D32"));
+                h.tvPoints.setText("+ " + points + " Points");
+                h.tvAmount.setText("৳ " + amount);
+                h.tvAmount.setTextColor(Color.parseColor("#2E7D32"));
+                break;
+
+            case "deduct":
+            case "withdraw":
+                h.tvType.setBackgroundColor(Color.parseColor("#C62828"));
+                h.tvPoints.setText("- " + points + " Points");
+                h.tvAmount.setText("৳ " + amount);
+                h.tvAmount.setTextColor(Color.parseColor("#C62828"));
+                break;
+
+            default:
+                h.tvType.setBackgroundColor(Color.parseColor("#1565C0"));
+                h.tvPoints.setText(points + " Points");
+                h.tvAmount.setText("৳ " + amount);
+                h.tvAmount.setTextColor(Color.parseColor("#1565C0"));
+                break;
+        }
+
+        // reason
+        h.tvReason.setText(
+                (item.reason == null || item.reason.trim().isEmpty())
+                        ? "No reason provided"
+                        : item.reason
+        );
+
+        // date
+        h.tvDate.setText(
+                item.createdAt != null ? item.createdAt : "N/A"
+        );
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list != null ? list.size() : 0;
     }
 
+    // =========================
+    // UPDATE LIST
+    // =========================
     public void update(List<TransactionModel> newList){
+        if(newList == null) return;
+
         list.clear();
         list.addAll(newList);
         notifyDataSetChanged();
