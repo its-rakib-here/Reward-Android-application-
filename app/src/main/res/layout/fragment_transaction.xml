@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#F6F7FB"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- HEADER -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="18dp"
+        android:orientation="vertical"
+        android:background="#FFFFFF">
+
+        <TextView
+            android:text="Transaction History"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#1E1E1E"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="All your earnings and withdrawals"
+            android:textSize="13sp"
+            android:textColor="#777777"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <!-- CONTENT -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- LIST -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="8dp"/>
+
+        <!-- EMPTY STATE -->
+        <LinearLayout
+            android:id="@+id/emptyView"
+            android:visibility="gone"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:src="@android:drawable/ic_menu_info_details"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:tint="#CCCCCC" />
+
+            <TextView
+                android:text="No Transactions Found"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#888888"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="Start earning or withdraw to see history"
+                android:textSize="12sp"
+                android:textColor="#AAAAAA"
+                android:layout_marginTop="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

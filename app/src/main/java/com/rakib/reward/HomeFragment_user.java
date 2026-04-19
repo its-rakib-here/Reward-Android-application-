@@ -42,13 +42,35 @@ public class HomeFragment_user extends Fragment {
         loadDashboardData();
 
         // 🔥 BUTTONS
-        view.findViewById(R.id.btnWithdraw).setOnClickListener(v ->
-                Toast.makeText(getActivity(), "Withdraw Clicked", Toast.LENGTH_SHORT).show()
-        );
+        view.findViewById(R.id.btnWithdraw).setOnClickListener(v -> {
 
-        view.findViewById(R.id.btnHistory).setOnClickListener(v ->
-                Toast.makeText(getActivity(), "History Clicked", Toast.LENGTH_SHORT).show()
-        );
+            Fragment withdrawFragment = new user_witdrawFragment();
+
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.user_dashboard, withdrawFragment) // তোমার container id
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+//        view.findViewById(R.id.btnHistory).setOnClickListener(v ->
+//
+//
+//                Toast.makeText(getActivity(), "History Clicked", Toast.LENGTH_SHORT).show()
+//        );
+
+        view.findViewById(R.id.btnHistory).setOnClickListener(v -> {
+
+            Fragment transactionFragment = new User_TransactionFragment();
+
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.user_dashboard, transactionFragment) // তোমার container id
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         return view;
     }

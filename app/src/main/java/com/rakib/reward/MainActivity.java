@@ -30,15 +30,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
 
-            else if(item.getItemId() == R.id.nav_history){
-                //loadFragment(new HistoryFragment());
-                return true;
-            }
-
-            else if(item.getItemId() == R.id.nav_withdraw){
-               // loadFragment(new WithdrawFragment());
-                return true;
-            }
 
             else if(item.getItemId() == R.id.nav_profile){
                 loadFragment(new UserPofileFragment());
@@ -52,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadFragment(Fragment fragment){
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
+                .replace(R.id.user_dashboard, fragment)
                 .commit();
     }
 }
