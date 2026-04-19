@@ -11,13 +11,7 @@
         android:layout_height="wrap_content"
         android:padding="12dp">
 
-        <ImageView
-            android:id="@+id/btnBack"
-            android:src="@drawable/ic_back"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            app:tint="@color/text_primary" />
+
 
         <TextView
             android:text="All Users"

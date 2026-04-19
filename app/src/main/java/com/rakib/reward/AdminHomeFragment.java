@@ -2,7 +2,6 @@ package com.rakib.reward;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.animation.ValueAnimator;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,8 +26,9 @@ import java.util.Map;
 
 public class AdminHomeFragment extends Fragment {
 
-    TextView tvPoints, tvWithdraw, tvPending, tvAdminName, tvSystemMoney;
+    TextView tvPoints, tvTotalUsers, tvPending, tvAdminName, tvWithdraw, tvSystemMoney;
     MaterialCardView btnAddPoints, btnWithdraw, updatePointValue;
+
     String url = "https://varadibo.net/reward/admin_dashboard.php";
     String lastUpdate = "";
 
@@ -36,7 +36,7 @@ public class AdminHomeFragment extends Fragment {
     Handler handler = new Handler();
     Runnable refreshRunnable;
 
-    public AdminHomeFragment(){}
+    public AdminHomeFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,12 +44,13 @@ public class AdminHomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home_admin, container, false);
 
-        // 🔥 INIT (MATCH WITH XML)
+        // INIT UI
         tvPoints = view.findViewById(R.id.tvPoints);
-        tvWithdraw = view.findViewById(R.id.tvWithdraw);
+        tvTotalUsers = view.findViewById(R.id.tvTotalUsers);
         tvPending = view.findViewById(R.id.tvPending);
-        tvAdminName = view.findViewById(R.id.tvAdminName);
+        tvWithdraw = view.findViewById(R.id.tvWithdraw);
         tvSystemMoney = view.findViewById(R.id.tvSystemMoney);
+        tvAdminName = view.findViewById(R.id.tvAdminName);
 
         btnAddPoints = view.findViewById(R.id.btnAddPoints);
         btnWithdraw = view.findViewById(R.id.btnWithdraw);
@@ -57,52 +58,48 @@ public class AdminHomeFragment extends Fragment {
 
         requestQueue = Volley.newRequestQueue(requireContext());
 
-        // 🔥 ADMIN NAME
-        SharedPreferences sp = requireActivity().getSharedPreferences("user",MODE_PRIVATE);
+        // ADMIN NAME
+        SharedPreferences sp = requireActivity().getSharedPreferences("user", MODE_PRIVATE);
         String name = sp.getString("name", "Admin");
         tvAdminName.setText("Hello, " + name + " 👋");
 
-        // 🔥 LOAD DATA
+        // LOAD DATA
         loadDashboard();
         startLiveUpdate();
 
-        // 🔥 NAVIGATION
-        btnAddPoints.setOnClickListener(v -> {
-            Fragment fragment = new AdminAddPointsFragment();
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.adminFragmentContainer, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
+        // NAVIGATION
+        btnAddPoints.setOnClickListener(v ->
+                openFragment(new AdminAddPointsFragment())
+        );
 
-        btnWithdraw.setOnClickListener(v -> {
-            Fragment fragment = new AdminWithdrawFragment();
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.adminFragmentContainer, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
+        btnWithdraw.setOnClickListener(v ->
+                openFragment(new AdminWithdrawFragment())
+        );
 
-        updatePointValue.setOnClickListener(v -> {
-            Fragment fragment = new AdminSettingsFragment();
-            requireActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.adminFragmentContainer, fragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
+        updatePointValue.setOnClickListener(v ->
+                openFragment(new AdminSettingsFragment())
+        );
 
         return view;
     }
 
     // =========================
-    // 🔥 LOAD DASHBOARD DATA
+    // OPEN FRAGMENT HELPER
     // =========================
-    private void loadDashboard(){
+    private void openFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.adminFragmentContainer, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
 
-        SharedPreferences sp = requireActivity().getSharedPreferences("user", 0);
+    // =========================
+    // DASHBOARD API
+    // =========================
+    private void loadDashboard() {
+
+        SharedPreferences sp = requireActivity().getSharedPreferences("user", MODE_PRIVATE);
         String adminId = sp.getString("id", "");
         String token = sp.getString("token", "");
 
@@ -111,42 +108,38 @@ public class AdminHomeFragment extends Fragment {
 
                     try {
 
+                        Log.e("DASHBOARD_RESPONSE", response);
+
                         JSONObject obj = new JSONObject(response);
-                         Log.e("totall amoutnt",response);
-                        if(!obj.getBoolean("status")) return;
 
-                        String newUpdate = obj.optString("last_update");
-
-                        if(newUpdate.equals(lastUpdate)) return;
-
-                        lastUpdate = newUpdate;
+                        if (!obj.optBoolean("status", false)) return;
 
                         JSONObject data = obj.getJSONObject("data");
 
-                        int points = data.optInt("total_points");
-                        int withdraw = data.optInt("total_withdraw");
-                        int pending = data.optInt("pending_requests");
-                        double systemMoney = data.optDouble("total_system_money", 0);
+                        int totalUsers = data.optInt("total_users", 0);
+                        int points = data.optInt("total_points", 0);
+                        int withdraw = data.optInt("total_withdraw", 0);
+                        int pending = data.optInt("pending_requests", 0);
+                        double systemMoney = data.optDouble("total_system_money", 0.0);
 
+                        // 🔥 DIRECT UI UPDATE (NO runOnUiThread needed)
+                        tvTotalUsers.setText(String.valueOf(totalUsers));
+                        tvPoints.setText(String.valueOf(points));
+                        tvWithdraw.setText(String.valueOf(withdraw));
+                        tvPending.setText(String.valueOf(pending));
                         tvSystemMoney.setText("৳ " + String.format("%.2f", systemMoney));
-                        animateText(tvPoints, points);
-                        animateText(tvWithdraw, withdraw);
-                        animateText(tvPending, pending);
 
-                        // 🔥 MONEY FORMAT
-//                        tvSystemMoney.setText("৳ " + String.format("%.2f", systemMoney));
-
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                 },
-                error -> {}
-        ){
+                error -> Log.e("DASHBOARD_ERROR", error.toString())
+        ) {
             @Override
-            protected Map<String,String> getParams(){
+            protected Map<String, String> getParams() {
 
-                Map<String,String> map = new HashMap<>();
+                Map<String, String> map = new HashMap<>();
                 map.put("admin_id", adminId);
                 map.put("token", token);
 
@@ -156,49 +149,28 @@ public class AdminHomeFragment extends Fragment {
 
         requestQueue.add(request);
     }
-
     // =========================
-    // 🔥 ANIMATION (IMPROVED)
+    // AUTO REFRESH
     // =========================
-    private void animateText(TextView tv, int value){
+    private void startLiveUpdate() {
 
-        int start = 0;
+        refreshRunnable = new Runnable() {
+            @Override
+            public void run() {
+                loadDashboard();
+                handler.postDelayed(this, 10000);
+            }
+        };
 
-        try {
-            start = Integer.parseInt(tv.getText().toString());
-        } catch (Exception ignored){}
-
-        ValueAnimator animator = ValueAnimator.ofInt(start, value);
-        animator.setDuration(500);
-
-        animator.addUpdateListener(animation ->
-                tv.setText(String.valueOf(animation.getAnimatedValue()))
-        );
-
-        animator.start();
+        handler.post(refreshRunnable);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        if(handler != null && refreshRunnable != null){
+        if (handler != null && refreshRunnable != null) {
             handler.removeCallbacks(refreshRunnable);
         }
-    }
-
-    private void startLiveUpdate(){
-
-        refreshRunnable = new Runnable() {
-            @Override
-            public void run() {
-
-                loadDashboard();
-                handler.postDelayed(this, 10000);
-
-            }
-        };
-
-        handler.post(refreshRunnable);
     }
 }
